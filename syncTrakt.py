@@ -187,18 +187,18 @@ class Application(object):
   def initConfigFile(self, config, configFile):
     config.add_section('Sonarr')
     config.set('Sonarr', 'quality', 1)
-    config.get('Sonarr', 'rootDirectory', '/home/pi')
-    config.get('Sonarr', 'sonarr_apikey', '')
-    config.get('Sonarr', 'sonarrUrl', 'http://127.0.0.1:8989')
-    config.get('Sonarr', 'MonitorSpecials', 'False')
+    config.set('Sonarr', 'rootDirectory', '/home/pi')
+    config.set('Sonarr', 'sonarr_apikey', '')
+    config.set('Sonarr', 'sonarrUrl', 'http://127.0.0.1:8989')
+    config.set('Sonarr', 'MonitorSpecials', 'False')
 
     config.add_section('Trakt')
-    config.get('Trakt', 'TraktAppID', '')
-    config.get('Trakt', 'TraktID', '')
-    config.get('Trakt', 'TraktSecret', '')
-    config.get('Trakt', 'user', '')    
-    config.get('Trakt', 'TraktWatchList', '')
-    config.get('Trakt', 'ignoreList', '')
+    config.set('Trakt', 'TraktAppID', '')
+    config.set('Trakt', 'TraktID', '')
+    config.set('Trakt', 'TraktSecret', '')
+    config.set('Trakt', 'user', '')    
+    config.set('Trakt', 'TraktWatchList', '')
+    config.set('Trakt', 'ignoreList', '')
     
     config.write(open(configFile, 'w')) 
 
