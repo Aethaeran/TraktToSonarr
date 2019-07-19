@@ -1,24 +1,38 @@
 # TraktToSonarr
-Synchronize shows from Trakt in Sonarr
 
-This Python 3 script will allow you to sync Trakt into your Sonarr installation.
+This script uses Python 3.7
 
-For this to work, you will need to create an API in Trakt using this link : https://trakt.tv/oauth/applications/new
-ont the ClientId, the Secret ID and the App ID, you can find the last one on your App page it's the last number in the URL
-ex : https://trakt.tv/oauth/applications/xxxxxx  with xxxxx your App ID
+This is a companion application to add the highly requested ability to synchronize shows from Trakt.tv lists into a Sonarr installation.
 
-other thing you might need :
-create a list for your shows, you can use the watchlist, but once you'll have seen all of a show or season, it is removed from the watchlist, this is how Trakt manage it.
-you also can create another list for the shows you want to be created in sonarr but not searched, I use this for show on Netflix, that way I can see them in the Sonarr calendar, but they're not downloaded.
-
-
-This script use Pyton 3.6
-
-
-the python librairy you will need to run the script :
+##Required python libraries:
 trakt.py
 --> pip install trakt.py
 tvdbsimple
 --> pip install tvdbsimple
 
-the first run will create the config file, you will have to edit it to put all Trakt ID, Sonarr URL...
+##Configuration:
+
+The first run will create the config file (syncTrakt.conf), you will have to edit it to put in all necessary data.
+
+Sonarr Section:
+
+	quality = The quality setting passed to Sonarr you want added shows to be added with. 
+	rootDirectory = The main directory you are going to save TraktToSonarr in. Defaults to the location it is run from.
+	sonarr_apikey = Your sonarr installations API key. Can be found within Sonarr's settings.
+	sonarrUrl = The url for your Sonarr server if not locally hosted.
+	MonitorSpecials = Set to True or False depending on if you want Season 0 (Typically show specials) to be added as monitored.
+
+IMPORTANT
+To fill out this next section of the configuration file, you will need to create an API in Trakt using this link : https://trakt.tv/oauth/applications/new
+Name it whatever you like,
+set the Redirect URI: to urn:ietf:wg:oauth:2.0:oob
+After creation, keep the page open, you will need to copy and paste data into their respective places within the configuration file. 
+
+Trakt Section:
+
+	TraktAppID = This can be found on your app page. It's the last number in the URL (ie: in https://trakt.tv/oauth/applications/xxxxxx would mean your TraktAppID is xxxxxx)
+	TraktID = Client ID from app page.
+	TraktSecret = Client Secret from app page.
+	user = The name of the user who's Trakt list you want to sync to Sonarr.
+	TraktWatchList = The name of the list you want to sync to Sonarr. (Set to 'watchlist' to just sync your WatchList)
+	ignoreList = This list will be added in Sonarr but not monitored, I use this for shows on Netflix, that way I can see them in the Sonarr calendar, but they won't download.

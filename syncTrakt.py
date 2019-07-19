@@ -12,6 +12,7 @@ from trakt.objects import Show, Season
 import io
 from six.moves import input
 import os.path
+import platform
 from pprint import pprint
 from datetime import datetime
 import configparser
@@ -56,12 +57,18 @@ class Application(object):
     with Trakt.configuration.oauth.from_response(self.authorization, refresh=True):
       r=requests.get(self.sonarrUrl + '/api/series?apikey='+self.sonarr_apikey)
       self.sonnarLib = r.json()
-
-      reponse = Trakt['users/*/lists/*'].get(self.TraktUser, self.TraktWatchList)
+	  
+      if self.TraktWatchList.lower() == "watchlist":
+        reponse = Trakt['sync/watchlist'].shows(pagination= True, per_page=100)
+      else:
+        reponse = Trakt['users/*/lists/*'].get(self.TraktUser, self.TraktWatchList)
       
       self.seasonsExceptions = [x for x in reponse.items() if isinstance(x, Season)]
- 
-      showList = [x for x in reponse.items() if isinstance(x, Show)]
+      
+      if self.TraktWatchList.lower() == "watchlist":
+        showList = [x[1] for x in reponse.items()]
+      else:
+        showList = [x for x in reponse.items() if isinstance(x, Show)]
       
       self.watched = {}
 
@@ -126,13 +133,17 @@ class Application(object):
     
   def loadParameters(self):
     config=configparser.ConfigParser()
-    configFile = '/home/pi/script/syncTrakt.conf'
+    #Save the syncTrakt.conf to wherever the syncTrakt.py file is located.
+    if platform.system() == "Windows":
+      configFile = os.path.dirname(os.path.realpath(__file__))+'\syncTrakt.conf'
+    if platform.system() == "Linux" or platform.system() == "Darwin":#Darwin = MacOS
+      configFile = os.path.dirname(os.path.realpath(__file__))+'/syncTrakt.conf'
     
     if not os.path.exists(configFile):
       self.initConfigFile(config, configFile)
  
     
-    config.read('/home/pi/script/syncTrakt.conf')
+    config.read(configFile)
     
     self.quality=int(config.get('Sonarr', 'quality'))
     self.rootDirectory=config.get('Sonarr', 'rootDirectory')
@@ -186,8 +197,8 @@ class Application(object):
     
   def initConfigFile(self, config, configFile):
     config.add_section('Sonarr')
-    config.set('Sonarr', 'quality', 1)
-    config.set('Sonarr', 'rootDirectory', '/home/pi')
+    config.set('Sonarr', 'quality', '1')
+    config.set('Sonarr', 'rootDirectory', os.path.dirname(os.path.realpath(__file__)))
     config.set('Sonarr', 'sonarr_apikey', '')
     config.set('Sonarr', 'sonarrUrl', 'http://127.0.0.1:8989')
     config.set('Sonarr', 'MonitorSpecials', 'False')
@@ -290,7 +301,7 @@ class Application(object):
 
   def addShow(self, show):
     if self.getTvdbId(show) == None:
-      logging.error('Cant\'t add show '+show.title+' : No TvdbId')
+      logging.error('Can\'t add show '+show.title+' : No TvdbId')
       return None
 
 
@@ -319,7 +330,6 @@ class Application(object):
     monitored = True    
     if self.Ignored and len([x for x in self.Ignored if self.getTvdbId(x) == tvdbId]) > 0:
       monitored = False
-    
         
     payload={'tvdbId':self.getTvdbId(show), 'title': show.title, 'qualityProfileId': self.quality, 'titleSlug': self.getSlug(show), 'images': self.getTvbdPoster(show), 'seasons': seasons, 'rootFolderPath': self.rootDirectory, 'seansonFolder': False,  'monitored' : monitored}
     
