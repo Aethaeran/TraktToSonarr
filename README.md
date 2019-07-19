@@ -6,10 +6,18 @@ This is a companion application to add the highly requested ability to synchroni
 
 # Required python libraries:
 
-* trakt.py
+* [requests](https://pypi.org/project/requests/)
+--> pip install requests
+* [slugify](https://pypi.org/project/python-slugify/)
+--> pip install python-slugify
+* [trakt.py](https://github.com/fuzeman/trakt.py)
 --> pip install trakt.py
-* tvdbsimple
+* [configparser](https://pypi.org/project/configparser/)
+--> pip install configparser
+* [tvdbsimple](https://pypi.org/project/tvdbsimple/)
 --> pip install tvdbsimple
+* [pytz](https://pypi.org/project/pytz/)
+--> pip install pytz
 
 # Configuration:
 
@@ -29,7 +37,7 @@ To fill out this next section of the configuration file, you will need to create
 --> whatever you like, but something you'll be able to recognize (ie. 'myTraktToSonarr')
 * Redirect URI
 --> urn:ietf:wg:oauth:2.0:oob
-* After creation, keep the page open! You will need to copy and paste data into their respective places within the configuration file. 
+* After creation, __keep the page open!__ You will need to copy and paste data into their respective places within the configuration file. 
 
 ### Trakt Section:
 
